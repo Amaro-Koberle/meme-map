@@ -1,9 +1,9 @@
 const router = require('express').Router();
 
-router.use('/user', require('./user'))
-router.use('/users', require('./users'))
-router.use('/articles', require('./articles'))
-router.use('/profiles', require('./profiles'))
-router.use('/tags', require('./tags'))
+router.get('/', (req, res, next) => {
+	res.json({ message: 'Server is runnung' });
+});
 
-module.exports = router
+router.use('/auth', require('./auth'));
+
+module.exports = router;
