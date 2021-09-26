@@ -1,10 +1,42 @@
 const router = require('express').Router();
-const authController = require('../controllers/auth');
-const signupValidation = require('../validations/signupValidation');
+const { body } = require('express-validator');
+const authControllers = require('../controllers/auth');
 
-router.post('/signup', signupValidation, authController.signup);
-// router.post('/login', authController.login);
-// router.put('/forgot-password', authController.forgotPassword);
-// router.get('/reset/:token', authController.resetPassword);
+const User = require('../models/user');
+
+// signup route
+router.post(
+	'/signup',
+	// input validation
+	[
+		body('name')
+			.trim()
+			.not()
+			.isEmpty()
+			.withMessage('Name cannot be left empty.'),
+		body('email')
+			.isEmail()
+			.withMessage('Invalid email address.')
+			// check if email is already in use
+			.custom((email, { req }) => {
+				return User.findOne({ email: email }).then((user) => {
+					if (user) {
+						return Promise.reject('Email address is already in use.');
+					}
+				});
+			})
+			.normalizeEmail(),
+		body('password')
+			.isLength({ min: 6 })
+			.withMessage('Password must be at least 6 characters long.'),
+	],
+	authControllers.signup
+);
+
+// login route
+router.post('/login', authControllers.login);
+
+// reset password route
+router.post('/reset-password', authControllers.resetPassword);
 
 module.exports = router;
