@@ -1,8 +1,14 @@
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useState, useContext } from 'react';
+import AuthContext from '../../context/auth-context';
+import { Link, useHistory } from 'react-router-dom';
 import axios from 'axios';
 
 export default function Login() {
+	const authContext = useContext(AuthContext);
+	const isLoggedIn = authContext.isLoggedIn;
+
+	const history = useHistory();
+
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
 
@@ -24,16 +30,18 @@ export default function Login() {
 				return res;
 			})
 			.then((res) => {
-				// submit store token in local storage
-				// TODO: this may expose me to XSS attacks, I may need to implement a solution for this
-				localStorage.setItem('token', res.data.token);
-				localStorage.setItem('userId', res.data.userId);
+				// write userId and token expiry date to local storage
 				const remainingMilliseconds = 60 * 60 * 1000;
 				const expiryDate = new Date(
 					new Date().getTime() + remainingMilliseconds
 				);
+				localStorage.setItem('userId', res.data.userId);
 				localStorage.setItem('expiryDate', expiryDate.toISOString());
+				// set token in auth context
+				authContext.login(res.data.token);
 				console.log('Logged in successfully.');
+				// redirect to home page
+				history.push('/');
 			})
 			.catch((err) => console.log(err));
 	};

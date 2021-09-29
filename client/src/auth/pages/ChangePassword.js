@@ -1,44 +1,56 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useParams, useHistory } from 'react-router-dom';
 import axios from 'axios';
 
-export default function ResetPassword() {
-	const [email, setEmail] = useState('');
+export default function ChangePassword() {
+	// extracting the token from the url
+	const params = useParams();
+	const token = params.token;
+
+	const history = useHistory();
+
+	const [newPassword, setNewPassword] = useState('');
 
 	const submitHandler = (event) => {
 		event.preventDefault();
+		console.log(formData);
 		axios
-			.post('http://localhost:5000/auth/reset-password/', formData)
-			.then((res) => console.log(res))
+			.post('http://localhost:5000/auth/new-password/', formData)
+			.then((res) => {
+				console.log(res);
+				// redirect to home page
+				history.push('/');
+			})
 			.catch((err) => console.log(err));
 	};
 
-	const formData = { email: email };
+	const formData = {
+		newPassword: newPassword,
+		resetToken: token,
+		userId: localStorage.getItem('userId'),
+	};
 
-	const emailInputChangeHandler = (event) => {
-		setEmail(event.target.value);
+	const newPasswordInputChangeHandler = (event) => {
+		setNewPassword(event.target.value);
 	};
 
 	return (
 		<>
-			<h1>Reset Password</h1>
+			<h1>Change Password</h1>
 			<form onSubmit={submitHandler}>
 				<>
-					<label htmlFor='email'>Email</label>
+					<label htmlFor='newPassword'>New password</label>
 					<input
 						required
-						type='email'
-						id='email'
-						name='email'
-						onChange={emailInputChangeHandler}
+						type='password'
+						id='newPassword'
+						name='newPassword'
+						onChange={newPasswordInputChangeHandler}
 					/>
 				</>
 
-				<button type='submit'>Send reset email</button>
+				<button type='submit'>Change password</button>
 			</form>
-			<Link to='/auth/login'>
-				<span>Log in</span>
-			</Link>
 		</>
 	);
 }

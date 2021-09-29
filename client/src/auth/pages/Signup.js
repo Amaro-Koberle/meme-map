@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import axios from 'axios';
 
 export default function Signup() {
@@ -7,15 +7,7 @@ export default function Signup() {
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
 
-	const submitHandler = (event) => {
-		event.preventDefault();
-		axios
-			.post('http://localhost:5000/auth/signup/', formData)
-			.then((res) => console.log(res))
-			.catch((err) => console.log(err));
-	};
-
-	const formData = { name: name, email: email, password: password };
+	const history = useHistory();
 
 	const nameInputChangeHandler = (event) => {
 		setName(event.target.value);
@@ -26,6 +18,21 @@ export default function Signup() {
 	const passwordInputChangeHandler = (event) => {
 		setPassword(event.target.value);
 	};
+
+	const submitHandler = (event) => {
+		event.preventDefault();
+		axios
+			.post('http://localhost:5000/auth/signup/', formData)
+			.then((res) => {
+				console.log(res);
+				// redirect to home page
+				history.push('/');
+			})
+			.catch((err) => console.log(err));
+	};
+
+	const formData = { name: name, email: email, password: password };
+
 	return (
 		<>
 			<h1>Sign up</h1>

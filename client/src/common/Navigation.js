@@ -18,7 +18,7 @@ export default function Navigation() {
 						<Link to='/profile'>Profile</Link>
 					</li>
 					<li>
-						<Link to='/'>Settings</Link>
+						<Link to='/settings'>Settings</Link>
 					</li>
 				</ul>
 			</nav>

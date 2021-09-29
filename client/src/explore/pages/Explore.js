@@ -1,7 +1,9 @@
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
+import AuthContext from '../../context/auth-context';
 
 export default function Explore() {
+	const isLoggedIn = useContext(AuthContext).isLoggedIn;
 	const [searchTerm, setSearchTerm] = useState('');
 
 	const searchHandler = (event) => {
@@ -28,12 +30,17 @@ export default function Explore() {
 				</>
 				<button type='submit'>Search</button>
 			</form>
-			<Link to='/auth/login'>
-				<button>Log in</button>
-			</Link>
-			<Link to='/auth/signup'>
-				<button>Sign up</button>
-			</Link>
+
+			{!isLoggedIn && (
+				<>
+					<Link to='/auth/login'>
+						<button>Log in</button>
+					</Link>
+					<Link to='/auth/signup'>
+						<button>Sign up</button>
+					</Link>
+				</>
+			)}
 		</>
 	);
 }

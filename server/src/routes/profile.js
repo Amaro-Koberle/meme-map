@@ -3,6 +3,6 @@ const profileControllers = require('../controllers/profile');
 const isAuth = require('../middleware/is-auth');
 
 // my-profile route
-router.get('/profile', isAuth, profileControllers.profile);
+router.get('/profile', isAuth, profileControllers.getProfile);
 
 module.exports = router;

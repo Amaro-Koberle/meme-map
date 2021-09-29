@@ -27,10 +27,12 @@ app.use(bodyParser.json()); // application/json
 // importing routes
 const authRoutes = require('./routes/auth');
 const profileRoutes = require('./routes/profile');
+const settingsRoutes = require('./routes/settings');
 
 // routing
 app.use('/auth', authRoutes);
 app.use('/profile', profileRoutes);
+app.use('/settings', settingsRoutes);
 
 // error handling
 app.use((err, req, res, next) => {

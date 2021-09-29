@@ -1,1 +1,1 @@
-exports.home = (req, res, next) => {};
+exports.explore = (req, res, next) => {};

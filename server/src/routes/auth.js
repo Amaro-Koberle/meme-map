@@ -39,4 +39,14 @@ router.post('/login', authControllers.login);
 // reset password route
 router.post('/reset-password', authControllers.resetPassword);
 
+// change password route
+router.post(
+	'/change-password/:token',
+	authControllers.changePassword
+	// 	TODO: input validation
+);
+
+// post new password route
+router.post('/new-password', authControllers.newPassword);
+
 module.exports = router;

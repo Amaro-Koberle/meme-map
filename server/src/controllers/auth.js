@@ -108,7 +108,6 @@ exports.login = (req, res, next) => {
 
 // reset password controller
 exports.resetPassword = (req, res, next) => {
-	console.log(req.body.email);
 	// create random token
 	crypto.randomBytes(32, (err, buffer) => {
 		if (err) {
@@ -137,9 +136,9 @@ exports.resetPassword = (req, res, next) => {
 					from: 'amaro@amarokoberle.com',
 					subject: 'Password reset',
 					html: `
-						<p>You requested a password reset.</p>
-						<h3>Click this link to reset your password:</h3>
-						<h1><a href="http://localhost:3000/reset/${token}">Reset password</a></h1>
+					<h3>Click this link to change your password:</h3>
+					<h1><a href="http://localhost:3000/auth/change-password/${token}">Change password</a></h1>
+					<p>You requested a password reset.</p>
 						<p>If you didn't request a password reset, someone else did.</p>
 						<p>The reset link will expire in one hour.</p>
 						`,
@@ -152,4 +151,83 @@ exports.resetPassword = (req, res, next) => {
 				next(err);
 			});
 	});
+};
+
+//change password controller
+exports.changePassword = (req, res, next) => {
+	const newPassword = req.body.newPassword;
+	const token = req.params.token;
+	console.log(token);
+	console.log(req.body);
+	let loadedUser;
+	User.findOne({ resetToken: token, resetTokenExpiration: { $gt: Date.now() } })
+		.then((user) => {
+			if (!user) {
+				const error = new Error(
+					'Password reset link is invalid or has expired.'
+				);
+				error.statusCode = 404;
+				throw error;
+			}
+			loadedUser = user;
+			return bcrypt.hash(newPassword, 12);
+		})
+		.then((hashedPassword) => {
+			loadedUser.password = hashedPassword;
+			loadedUser.resetToken = undefined;
+			loadedUser.resetTokenExpiration = undefined;
+			return loadedUser.save();
+		})
+		.then((user) => {
+			res
+				.status(200)
+				.json({ message: 'Password change request sent.', userId: user._id });
+		})
+		.catch((err) => {
+			if (!err.statusCode) {
+				err.statusCode = 500;
+			}
+			next(err);
+		});
+};
+
+// post new password controller
+exports.newPassword = (req, res, next) => {
+	const newPassword = req.body.newPassword;
+	const userId = req.body.userId;
+	const resetToken = req.body.resetToken;
+	console.log(req.body);
+	let loadedUser;
+
+	User.findOne({
+		resetToken: resetToken,
+		resetTokenExpiration: { $gt: Date.now() },
+		_id: userId,
+	})
+		.then((user) => {
+			if (!user) {
+				const error = new Error(
+					'Password reset link is invalid or has expired.'
+				);
+				error.statusCode = 404;
+				throw error;
+			}
+			loadedUser = user;
+			return bcrypt.hash(newPassword, 12);
+		})
+		.then((hashedPassword) => {
+			loadedUser.password = hashedPassword;
+			loadedUser.resetToken = undefined;
+			loadedUser.resetTokenExpiration = undefined;
+			return loadedUser.save();
+		})
+		.then((result) => {
+			res.status(200).json({ message: 'Password changed successfully.' });
+		})
+		.catch((err) => {
+			if (!err.statusCode) {
+				err.statusCode = 500;
+			}
+			next(err);
+		});
 };
