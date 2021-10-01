@@ -30,15 +30,8 @@ export default function Login() {
 				return res;
 			})
 			.then((res) => {
-				// write userId and token expiry date to local storage
-				const remainingMilliseconds = 60 * 60 * 1000;
-				const expiryDate = new Date(
-					new Date().getTime() + remainingMilliseconds
-				);
-				localStorage.setItem('userId', res.data.userId);
-				localStorage.setItem('expiryDate', expiryDate.toISOString());
-				// set token in auth context
-				authContext.login(res.data.token);
+				// set token userId in auth context
+				authContext.login(res.data.token, res.data.userId);
 				console.log('Logged in successfully.');
 				// redirect to home page
 				history.push('/');
@@ -80,10 +73,10 @@ export default function Login() {
 				</>
 				<button type='submit'>Log in</button>
 			</form>
-			<Link to='/auth/signup'>
+			<Link to='/signup'>
 				<span>Sign up</span>
 			</Link>
-			<Link to='/auth/reset-password'>
+			<Link to='/reset-password'>
 				<span>Forgot password?</span>
 			</Link>
 		</>

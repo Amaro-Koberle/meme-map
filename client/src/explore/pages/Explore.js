@@ -33,10 +33,10 @@ export default function Explore() {
 
 			{!isLoggedIn && (
 				<>
-					<Link to='/auth/login'>
+					<Link to='/login'>
 						<button>Log in</button>
 					</Link>
-					<Link to='/auth/signup'>
+					<Link to='/signup'>
 						<button>Sign up</button>
 					</Link>
 				</>

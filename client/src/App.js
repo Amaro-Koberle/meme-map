@@ -13,6 +13,7 @@ import Settings from './settings/pages/SettingsMenu';
 
 export default function App() {
 	const isLoggedIn = useContext(AuthContext).isLoggedIn;
+
 	return (
 		<>
 			{isLoggedIn && (
@@ -28,16 +29,16 @@ export default function App() {
 			)}
 			{!isLoggedIn && (
 				<>
-					<Route path='/auth/signup'>
+					<Route path='/signup'>
 						<Signup />
 					</Route>
-					<Route path='/auth/login'>
+					<Route path='/login'>
 						<Login />
 					</Route>
-					<Route path='/auth/reset-password'>
+					<Route path='/reset-password'>
 						<ResetPassword />
 					</Route>
-					<Route path='/auth/change-password/:token'>
+					<Route path='/change-password/:token'>
 						<ChangePassword />
 					</Route>
 				</>
@@ -45,9 +46,11 @@ export default function App() {
 			<Route exact path='/'>
 				<Explore />
 			</Route>
+
+			{/* TODO: handle invalid routes and add 404 page
 			<Route path='*'>
 				<Redirect to='/' />
-			</Route>
+			</Route> */}
 		</>
 	);
 }

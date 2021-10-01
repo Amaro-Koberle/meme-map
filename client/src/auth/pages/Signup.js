@@ -69,7 +69,7 @@ export default function Signup() {
 				</>
 				<button type='submit'>Sign up</button>
 			</form>
-			<Link to='/auth/login'>
+			<Link to='/login'>
 				<span>Log in</span>
 			</Link>
 		</>

@@ -36,7 +36,7 @@ export default function ResetPassword() {
 
 				<button type='submit'>Send reset email</button>
 			</form>
-			<Link to='/auth/login'>
+			<Link to='/login'>
 				<span>Log in</span>
 			</Link>
 		</>
